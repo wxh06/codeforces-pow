@@ -3,10 +3,14 @@
 use sha1::{Digest, Sha1};
 use std::fmt::Write;
 
-#[cfg(feature = "wasm")]
+#[cfg(feature = "pyo3")]
+use pyo3::prelude::*;
+
+#[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::prelude::*;
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[cfg_attr(feature = "pyo3", pyfunction)]
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 pub fn work(input: &str) -> String {
     let mut i = 0;
     let mut result = String::with_capacity(27);
@@ -22,6 +26,12 @@ pub fn work(input: &str) -> String {
         i += 1;
     }
     result
+}
+
+#[cfg(feature = "pyo3")]
+#[pymodule]
+fn cfpow(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(work, m)?)
 }
 
 #[cfg(test)]
