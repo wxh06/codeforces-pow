@@ -2,9 +2,11 @@
 
 use sha1::{Digest, Sha1};
 use std::fmt::Write;
+
+#[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn work(input: &str) -> String {
     let mut i = 0;
     let mut result = String::with_capacity(27);
